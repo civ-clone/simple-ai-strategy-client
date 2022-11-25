@@ -1,10 +1,8 @@
 # simple-ai-strategy-client
 
-A simple[1] AI[2] client, that makes use of `Strategy`s and `Routine`s to be an extensible opponent client.
+A re-implementation of [`simple-ai-client`](https://github.com/civ-clone/simple-ai-client) using the `Strategy`s of
+[`core-strategy`](https://github.com/civ-clone/core-strategy). This is "just" a collection that includes all the
+`core-` and `base-` packages to be able to easily include the components via one package and the tests to ensure it
+performs the same function as that which it is re-implementing.
 
-The aims behind `core-strategy` are to continue to have a system that can be tweaked as needed, e.g. when adding
-religion to the game, you'd need to handle those events, and instead of modifying the core with optional extensions,
-embracing the plugin mechanism to add a plugin pack that includes the relevant `Strategy`s.
-
-[1]: "Simple". It's not intended to be complex, but inevitably could end up so.
-[2]: CPU player? It's not ML-based... Yet?
+This might actually be better named as `civ1-strategy-ai-client`.
