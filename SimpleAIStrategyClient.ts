@@ -1,59 +1,12 @@
-import {
-  LeaderRegistry,
-  instance as leaderRegistryInstance,
-} from '@civ-clone/core-civilization/LeaderRegistry';
-import {
-  StrategyRegistry,
-  instance as strategyRegistryInstance,
-} from '@civ-clone/core-strategy/StrategyRegistry';
-import AIClient from '@civ-clone/core-ai-client/AIClient';
-import Player from '@civ-clone/core-player/Player';
-import PlayerAction from '@civ-clone/core-player/PlayerAction';
-import UnhandledAction from './UnhandledAction';
+import StrategyAIClient from '@civ-clone/core-strategy-ai-client/StrategyAIClient';
+import { PreProcessTurn } from '@civ-clone/library-strategy/PlayerActions/PreProcessTurn';
 
-const MAX_ACTIONS_PER_TURN = 3000;
-
-export class SimpleAIClient extends AIClient {
-  #strategyRegistry: StrategyRegistry;
-
-  constructor(
-    player: Player,
-    leaderRegistry: LeaderRegistry = leaderRegistryInstance,
-    strategyRegistry: StrategyRegistry = strategyRegistryInstance
-  ) {
-    super(player, leaderRegistry);
-
-    this.#strategyRegistry = strategyRegistry;
-  }
-
-  attempt(action: PlayerAction): boolean {
-    return this.#strategyRegistry.attempt(action);
-  }
-
+export class SimpleStrategyAIClient extends StrategyAIClient {
   async takeTurn(): Promise<void> {
-    // TODO: check if we need this _and_ the `handled` check.
-    let loopCheck = 0;
+    this.attempt(new PreProcessTurn(this.player(), null));
 
-    while (this.player().hasMandatoryActions()) {
-      const action = this.player().mandatoryAction();
-
-      if (loopCheck++ > MAX_ACTIONS_PER_TURN) {
-        throw new UnhandledAction(
-          `Loop detected on '${Object.toString.call(
-            action
-          )}' (${Object.toString.call(action.value())})`
-        );
-      }
-
-      if (!(await this.attempt(action))) {
-        throw new UnhandledAction(
-          `No handler succeeded for '${Object.toString.call(
-            action
-          )}' (${Object.toString.call(action.value())})`
-        );
-      }
-    }
+    return super.takeTurn();
   }
 }
 
-export default SimpleAIClient;
+export default SimpleStrategyAIClient;
